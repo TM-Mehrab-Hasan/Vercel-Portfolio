@@ -22,28 +22,29 @@ const Contact = () => {
     const SERVICE_ID = process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID!;
     const ADMIN_TEMPLATE_ID = process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID!;
     const AUTO_REPLY_TEMPLATE_ID = process.env.NEXT_PUBLIC_EMAILJS_AUTO_REPLY_TEMPLATE_ID!;
+    const PUBLIC_KEY = process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY!;
 
     try {
-      emailjs.init(process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY!);
-
       // 1. Send message TO YOU (Admin Notification)
       await emailjs.sendForm(
         SERVICE_ID,
         ADMIN_TEMPLATE_ID,
-        formRef.current
+        formRef.current,
+        PUBLIC_KEY
       );
 
       // 2. Send AUTO-REPLY TO USER (Free tier manual fire)
       await emailjs.sendForm(
         SERVICE_ID,
         AUTO_REPLY_TEMPLATE_ID,
-        formRef.current
+        formRef.current,
+        PUBLIC_KEY
       );
 
       toast.success('Message sent! I will get back to you soon.', { id: toastId });
       formRef.current.reset();
     } catch (error: any) {
-      console.error('EmailJS Error:', error?.text || error);
+      console.error('EmailJS Error:', error?.text || error?.message || error);
       toast.error('Failed to send message. Please try again.', { id: toastId });
     } finally {
       setIsSending(false);
